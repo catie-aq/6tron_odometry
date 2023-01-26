@@ -15,71 +15,47 @@
  * limitations under the License.
  *
  * Maintainer : ACH
- * Creation : 07/2022
+ * Creation : 01/2023
  */
-#ifndef CATIE_SIXTRON_ODOMETRY_H_
-#define CATIE_SIXTRON_ODOMETRY_H_
+#ifndef CATIE_SIXTRON_ODOMETRY_H
+#define CATIE_SIXTRON_ODOMETRY_H
 
 #include <stdint.h>
 #include <math.h>
 
 namespace sixtron {
 
-    class Odometry {
-
-    public:
-
-        Odometry();
-
-        ~Odometry();
-
-        void init(float rate_hz,
-                  float enc_resolution,
-                  float enc_wheel_radius,
-                  float enc_wheels_distance);
-
-        /**
-         * @brief Compute the odometry (_vRobotLin, _vRobotAng, _theta, x, y) from the values of the encoders.
-         * @param encL Left encoder counter
-         * @param encR Right encoder counter
-         */
-        void compute(int64_t encL, int64_t encR);
-
-        float getVRobotLin() const;
-
-        float getVRobotAng() const;
-
-        float getTheta() const;
-
-        float getX() const;
-
-        float getY() const;
-
-        inline float ticks2Meters(float ticks) const { return (ticks * (1.0f / _tickPerMeters)); }
-
-        inline float meters2Ticks(float meters) const { return (meters * _tickPerMeters); }
-
-        inline float ticks2Rads(float ticks) const {
-            return ((ticks * float(M_PI)) / (_ticksPerRobotRevolution / 2.0f));
-        }
-
-        inline float rads2meters(float rads) const { return (rads * (_encWheelsDistance / 2.0f)); }
-
-    private:
-
-        float _encResolution, _encWheelRadius, _encWheelsDistance;
-        float _wheelPerimeter, _tickPerMeters;
-        float _metersPerRobotRevolution, _ticksPerRobotRevolution;
-
-        float _odomRateHz;
-        float _vRobotLin, _vRobotAng;
-        float _theta, _tickTheta, _dTheta;
-        float _x, _tickX;
-        float _y, _tickY;
-        float _robot_distance;
+    typedef struct position position;
+    struct position {
+        float x = 0.0f;
+        float y = 0.0f;
+        float theta = 0.0f;
     };
 
+    class Odometry {
+    public:
+        virtual void init() = 0;
 
+        virtual void update() = 0; //Update Odometry. Implementation depending on the type of odometry.
+
+        virtual void setPos(position pos) = 0; //Bypass odometry by setting a new pos, useful when re-calibrate.
+
+        virtual float getX() = 0;
+
+        virtual float getY() = 0;
+
+        virtual float getTheta() = 0;
+
+        virtual position getPos() = 0;
+
+        virtual float getSpeedLin() = 0;
+
+        virtual float getSpeedAng() = 0;
+
+//    private:
+//        float _theta, _x, _y;
+
+    };
 } // namespace sixtron
 
-#endif // CATIE_SIXTRON_ODOMETRY_H_
+#endif // CATIE_SIXTRON_ODOMETRY_H

@@ -18,35 +18,38 @@
  * Creation : 07/2022
  */
 
-#include "odometry/odometry.h"
+#include "odometry/odometry_two_encoders.h"
 
 namespace sixtron {
 
-    Odometry::Odometry() : _vRobotLin(0.0f), _vRobotAng(0.0f), _theta(0.0f), _tickTheta(0.0f),
-                           _dTheta(0.0f), _x(0.0f), _tickX(0.0f), _y(0.0f), _tickY(0.0f), _robot_distance(0.0f) {
-
-    }
-
-    void Odometry::init(float rate_hz, float enc_resolution, float enc_wheel_radius, float enc_wheels_distance) {
+    OdometryTwoEncoders::OdometryTwoEncoders(float rate_hz,
+                                             float motor_resolution,
+                                             float motor_wheel_radius,
+                                             float enc_wheels_distance) : _vRobotLin(0.0f), _vRobotAng(0.0f),
+                                                                          _theta(0.0f), _tickTheta(0.0f),
+                                                                          _dTheta(0.0f), _x(0.0f), _tickX(0.0f),
+                                                                          _y(0.0f), _tickY(0.0f),
+                                                                          _robot_distance(0.0f) {
 
         // Rate will be used for v_lin and v_ang
         _odomRateHz = rate_hz;
 
         // Save basic encoders datas
-        _encResolution = enc_resolution;
-        _encWheelRadius = enc_wheel_radius;
-        _encWheelsDistance = enc_wheels_distance;
+        _motorResolution = motor_resolution;
+        _motorWheelRadius = motor_wheel_radius;
+        _motorWheelsDistance = enc_wheels_distance;
 
         // Basic calculs
-        _wheelPerimeter = (2.0f * float(M_PI) * _encWheelRadius);
-        _tickPerMeters = ((1.0f / (_wheelPerimeter)) * _encResolution);
-        _metersPerRobotRevolution = (float(M_PI) * _encWheelsDistance);
+        _wheelPerimeter = (2.0f * float(M_PI) * _motorWheelRadius);
+        _tickPerMeters = ((1.0f / (_wheelPerimeter)) * _motorResolution);
+        _metersPerRobotRevolution = (float(M_PI) * _motorWheelsDistance);
         _ticksPerRobotRevolution = meters2Ticks(_metersPerRobotRevolution);
+
     }
 
-    Odometry::~Odometry() = default;
+    OdometryTwoEncoders::~OdometryTwoEncoders() = default;
 
-    void Odometry::compute(int64_t encL, int64_t encR) {
+    void OdometryTwoEncoders::compute(int64_t encL, int64_t encR) {
 
         //compute curvilinear distance
         float newDistance = float(encL + encR) / 2.0f;
@@ -77,24 +80,42 @@ namespace sixtron {
         _vRobotAng = ticks2Rads(_dTheta) * float(_odomRateHz);
     }
 
-    float Odometry::getVRobotLin() const {
+    float OdometryTwoEncoders::getSpeedLin() {
         return _vRobotLin;
     }
 
-    float Odometry::getVRobotAng() const {
+    float OdometryTwoEncoders::getSpeedAng() {
         return _vRobotAng;
     }
 
-    float Odometry::getTheta() const {
+    float OdometryTwoEncoders::getTheta() {
         return _theta;
     }
 
-    float Odometry::getX() const {
+    float OdometryTwoEncoders::getX() {
         return _x;
     }
 
-    float Odometry::getY() const {
+    float OdometryTwoEncoders::getY() {
         return _y;
+    }
+
+    void OdometryTwoEncoders::setPos(position pos) {
+
+        _x = pos.x;
+        _y = pos.y;
+        _theta = pos.theta;
+
+    }
+
+    position OdometryTwoEncoders::getPos() {
+
+        position current;
+        current.x = _x;
+        current.y = _y;
+        current.theta = _theta;
+
+        return current;
     }
 
 }
