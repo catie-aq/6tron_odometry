@@ -66,8 +66,6 @@ namespace sixtron {
             return ((ticks * float(M_PI)) / (_ticksPerRobotRevolution / 2.0f));
         }
 
-        inline float rads2meters(float rads) const { return (rads * (_motorWheelsDistance / 2.0f)); }
-
     private:
 
         float _motorResolution, _motorWheelRadius;
