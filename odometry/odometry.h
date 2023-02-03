@@ -34,7 +34,6 @@ struct position {
 };
 
 class Odometry {
-
 public:
     virtual void init() = 0;
 
