@@ -34,6 +34,7 @@ struct position {
 };
 
 class Odometry {
+
 public:
     virtual void init() = 0;
 
@@ -53,9 +54,6 @@ public:
     virtual float getSpeedLin() = 0;
 
     virtual float getSpeedAng() = 0;
-
-    //    private:
-    //        float _theta, _x, _y;
 };
 } // namespace sixtron
 

@@ -34,14 +34,6 @@ public:
 
     ~OdometryTwoEncoders();
 
-    /**
-     * @brief Compute the odometry (_vRobotLin, _vRobotAng, _theta, x, y) from the values of the
-     * encoders.
-     * @param encL Left encoder counter
-     * @param encR Right encoder counter
-     */
-    void compute(int64_t encL, int64_t encR);
-
     void setPos(position pos) override;
 
     position getPos() override;
@@ -57,6 +49,14 @@ public:
     float getY() override;
 
 protected:
+    /**
+     * @brief Compute the odometry (_vRobotLin, _vRobotAng, _theta, x, y) from the values of the
+     * encoders.
+     * @param encL Left encoder counter
+     * @param encR Right encoder counter
+     */
+    void compute(int64_t encL, int64_t encR);
+
     inline float ticks2Meters(float ticks) const
     {
         return (ticks * (1.0f / _tickPerMeters));
