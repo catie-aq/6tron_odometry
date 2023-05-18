@@ -112,6 +112,9 @@ float OdometryTwoEncoders::getY()
 
 void OdometryTwoEncoders::setPos(position pos)
 {
+    _tickX = 0.0f;
+    _tickY = 0.0f;
+    _tickTheta = 0.0f;
 
     _x = pos.x;
     _y = pos.y;
