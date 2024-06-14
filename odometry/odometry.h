@@ -52,6 +52,8 @@ public:
 
     virtual float getSpeedLin() = 0;
 
+    virtual float getSpeedTan() = 0;
+
     virtual float getSpeedAng() = 0;
 };
 } // namespace sixtron
