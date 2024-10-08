@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, CATIE
+ * Copyright (c) 2024, CATIE
  * SPDX-License-Identifier: Apache-2.0
  */
 #ifndef CATIE_SIXTRON_ODOMETRY_HOLONOMIC_H
