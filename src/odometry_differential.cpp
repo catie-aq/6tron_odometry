@@ -2,63 +2,63 @@
  * Copyright (c) 2024, CATIE
  * SPDX-License-Identifier: Apache-2.0
  */
-#include "odometry/odometry_two_encoders.h"
+#include "odometry/odometry_differential.h"
 
 namespace sixtron {
 
-OdometryTwoEncoders::OdometryTwoEncoders(
+OdometryDifferential::OdometryDifferential(
         float rate_hz, float motor_resolution, float motor_wheel_radius, float enc_wheels_distance):
-        _tickTheta(0.0f), _dTheta(0.0f), _tickX(0.0f), _tickY(0.0f), _robot_distance(0.0f) {
+        _tick_theta(0.0f), _d_theta(0.0f), _tick_x(0.0f), _tick_y(0.0f), _robot_distance(0.0f) {
 
     // Rate will be used for v_lin and v_ang
-    _odomRateHz = rate_hz;
+    _odom_rate_hz = rate_hz;
 
     // Save basic encoders datas
-    _motorResolution = motor_resolution;
-    _motorWheelRadius = motor_wheel_radius;
-    _motorWheelsDistance = enc_wheels_distance;
+    _motor_resolution = motor_resolution;
+    _motor_wheel_radius = motor_wheel_radius;
+    _motor_wheels_distance = enc_wheels_distance;
 
     // Basic calculs
-    _wheelPerimeter = (2.0f * float(M_PI) * _motorWheelRadius);
-    _tickPerMeters = ((1.0f / (_wheelPerimeter)) * _motorResolution);
-    _metersPerRobotRevolution = (float(M_PI) * _motorWheelsDistance);
-    _ticksPerRobotRevolution = meters2Ticks(_metersPerRobotRevolution);
+    _wheel_perimeter = (2.0f * float(M_PI) * _motor_wheel_radius);
+    _tick_per_meters = ((1.0f / (_wheel_perimeter)) * _motor_resolution);
+    _meters_per_robot_revolution = (float(M_PI) * _motor_wheels_distance);
+    _ticks_per_robot_revolution = meters2Ticks(_meters_per_robot_revolution);
 }
 
-OdometryTwoEncoders::~OdometryTwoEncoders() = default;
+OdometryDifferential::~OdometryDifferential() = default;
 
-void OdometryTwoEncoders::compute(int64_t encL, int64_t encR) {
+void OdometryDifferential::compute(int64_t encL, int64_t encR) {
 
     // compute curvilinear distance
-    float newDistance = float(encL + encR) / 2.0f;
-    float deltaDistance = newDistance - _robot_distance;
+    float new_distance = float(encL + encR) / 2.0f;
+    float delta_distance = new_distance - _robot_distance;
 
     // compute new angle value
-    float newAngle = float(encR - encL) / 2.0f;
+    float new_angle = float(encR - encL) / 2.0f;
 
-    _dTheta = newAngle - _tickTheta;
+    _d_theta = new_angle - _tick_theta;
 
     // compute X/Y coordinates
-    float midAngle = ticks2Rads(_tickTheta + (_dTheta / 2.0f));
-    float dx = deltaDistance * cosf(midAngle);
-    float dy = deltaDistance * sinf(midAngle);
-    _tickX += dx;
-    _tickY += dy;
+    float mid_angle = ticks2Rads(_tick_theta + (_d_theta / 2.0f));
+    float d_x = delta_distance * cosf(mid_angle);
+    float d_y = delta_distance * sinf(mid_angle);
+    _tick_x += d_x;
+    _tick_y += d_y;
 
     // Update values in meters
-    _odometry_position.x = ticks2Meters(_tickX);
-    _odometry_position.y = ticks2Meters(_tickY);
+    _odometry_position.x = ticks2Meters(_tick_x);
+    _odometry_position.y = ticks2Meters(_tick_y);
 
     // update global values
-    _tickTheta += _dTheta;
-    _odometry_position.theta = ticks2Rads(_tickTheta);
+    _tick_theta += _d_theta;
+    _odometry_position.theta = ticks2Rads(_tick_theta);
 
-    _robot_distance += deltaDistance;
-    _odometry_speeds.x = ticks2Meters(deltaDistance) * float(_odomRateHz);
-    _odometry_speeds.theta = ticks2Rads(_dTheta) * float(_odomRateHz);
+    _robot_distance += delta_distance;
+    _odometry_speeds.x = ticks2Meters(delta_distance) * float(_odom_rate_hz);
+    _odometry_speeds.theta = ticks2Rads(_d_theta) * float(_odom_rate_hz);
 }
 
-void OdometryTwoEncoders::setPos(position pos) {
+void OdometryDifferential::setPos(position pos) {
     // ! refactor: See issue #1
     // _x = pos.x;
     // _y = pos.y;
