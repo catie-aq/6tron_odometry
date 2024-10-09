@@ -8,17 +8,7 @@ namespace sixtron {
 
 OdometryTwoEncoders::OdometryTwoEncoders(
         float rate_hz, float motor_resolution, float motor_wheel_radius, float enc_wheels_distance):
-        _vRobotLin(0.0f),
-        _vRobotAng(0.0f),
-        _theta(0.0f),
-        _tickTheta(0.0f),
-        _dTheta(0.0f),
-        _x(0.0f),
-        _tickX(0.0f),
-        _y(0.0f),
-        _tickY(0.0f),
-        _robot_distance(0.0f)
-{
+        _tickTheta(0.0f), _dTheta(0.0f), _tickX(0.0f), _tickY(0.0f), _robot_distance(0.0f) {
 
     // Rate will be used for v_lin and v_ang
     _odomRateHz = rate_hz;
@@ -37,8 +27,7 @@ OdometryTwoEncoders::OdometryTwoEncoders(
 
 OdometryTwoEncoders::~OdometryTwoEncoders() = default;
 
-void OdometryTwoEncoders::compute(int64_t encL, int64_t encR)
-{
+void OdometryTwoEncoders::compute(int64_t encL, int64_t encR) {
 
     // compute curvilinear distance
     float newDistance = float(encL + encR) / 2.0f;
@@ -57,60 +46,23 @@ void OdometryTwoEncoders::compute(int64_t encL, int64_t encR)
     _tickY += dy;
 
     // Update values in meters
-    _x = ticks2Meters(_tickX);
-    _y = ticks2Meters(_tickY);
+    _odometry_position.x = ticks2Meters(_tickX);
+    _odometry_position.y = ticks2Meters(_tickY);
 
     // update global values
     _tickTheta += _dTheta;
-    _theta = ticks2Rads(_tickTheta);
+    _odometry_position.theta = ticks2Rads(_tickTheta);
 
     _robot_distance += deltaDistance;
-    _vRobotLin = ticks2Meters(deltaDistance) * float(_odomRateHz);
-    _vRobotAng = ticks2Rads(_dTheta) * float(_odomRateHz);
+    _odometry_speeds.x = ticks2Meters(deltaDistance) * float(_odomRateHz);
+    _odometry_speeds.theta = ticks2Rads(_dTheta) * float(_odomRateHz);
 }
 
-float OdometryTwoEncoders::getSpeedLin()
-{
-    return _vRobotLin;
-}
-
-float OdometryTwoEncoders::getSpeedAng()
-{
-    return _vRobotAng;
-}
-
-float OdometryTwoEncoders::getTheta()
-{
-    return _theta;
-}
-
-float OdometryTwoEncoders::getX()
-{
-    return _x;
-}
-
-float OdometryTwoEncoders::getY()
-{
-    return _y;
-}
-
-void OdometryTwoEncoders::setPos(position pos)
-{
-
-    _x = pos.x;
-    _y = pos.y;
-    _theta = pos.theta;
-}
-
-position OdometryTwoEncoders::getPos()
-{
-
-    position current;
-    current.x = _x;
-    current.y = _y;
-    current.theta = _theta;
-
-    return current;
+void OdometryTwoEncoders::setPos(position pos) {
+    // ! refactor: See issue #1
+    // _x = pos.x;
+    // _y = pos.y;
+    // _theta = pos.theta;
 }
 
 }
