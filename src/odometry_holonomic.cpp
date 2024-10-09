@@ -8,9 +8,6 @@ namespace sixtron {
 OdometryHolonomic::OdometryHolonomic(
         float rate_hz, int number_of_wheels, float distance_to_center, float offset):
         _number_of_wheels(number_of_wheels),
-        _vRobotLin(0.0f),
-        _vRobotAng(0.0f),
-        _theta_global(0.0f),
         _offset_angle(offset)
 
 {
@@ -22,13 +19,13 @@ OdometryHolonomic::OdometryHolonomic(
 OdometryHolonomic::~OdometryHolonomic() = default;
 
 // todo: should be done in init() ?
-void OdometryHolonomic::calculInit()
-{
+void OdometryHolonomic::calculInit() {
+    // ? this should not exist anymore
     // set current position (at the time the function is called) as the origin of the global
     // referential
-    _x_global = 0.0f;
-    _y_global = 0.0f;
-    _theta_global = 0.0f;
+    // _x_global = 0.0f;
+    // _y_global = 0.0f;
+    // _theta_global = 0.0f;
 
     // creates the temporary direct matrix (Vx Vy Omega -> Vmotors) for inversion
     Matrix directMatrix;
@@ -82,8 +79,7 @@ void OdometryHolonomic::calculInit()
     }
 }
 
-void OdometryHolonomic::compute(Matrix *vectorEncoders)
-{
+void OdometryHolonomic::compute(Matrix *vectorEncoders) {
 
     // this matrix multiplication gives a 3x1 vectors containing X,Y and theta in the base's
     // referential
@@ -102,61 +98,19 @@ void OdometryHolonomic::compute(Matrix *vectorEncoders)
     _global_position = multiply(_rotation, _delta_vector);
 
     // updating the position of the center of the base in the global referential
-    _x_global += _global_position.Matrice[0][0];
-    _y_global += _global_position.Matrice[1][0];
-    _theta_global += _global_position.Matrice[2][0];
+    _odometry_position.x += _global_position.Matrice[0][0];
+    _odometry_position.y += _global_position.Matrice[1][0];
+    _odometry_position.theta += _global_position.Matrice[2][0];
 
     // stores the local position for the next call
     _previous_odometry = XYThetaFromNEncoders;
 }
 
-float OdometryHolonomic::getSpeedLin()
-{
-    return _vRobotLin;
-}
-
-float OdometryHolonomic::getSpeedTan()
-{
-    return _vRobotTan;
-}
-
-float OdometryHolonomic::getSpeedAng()
-{
-    return _vRobotAng;
-}
-
-float OdometryHolonomic::getTheta()
-{
-    return _theta_global;
-}
-
-float OdometryHolonomic::getX()
-{
-    return _x_global;
-}
-
-float OdometryHolonomic::getY()
-{
-    return _y_global;
-}
-
-void OdometryHolonomic::setPos(position pos)
-{
-
-    _x_global = pos.x;
-    _y_global = pos.y;
-    _theta_global = pos.theta;
-}
-
-position OdometryHolonomic::getPos()
-{
-
-    position current;
-    current.x = _x_global;
-    current.y = _y_global;
-    current.theta = _theta_global;
-
-    return current;
+void OdometryHolonomic::setPos(position pos) {
+    // ! refactor: See issue #1
+    // _x_global = pos.x;
+    // _y_global = pos.y;
+    // _theta_global = pos.theta;
 }
 
 void OdometryHolonomic::updateRotation(float newAngle) // updates the rotation matrix

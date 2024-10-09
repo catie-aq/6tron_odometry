@@ -1,21 +1,6 @@
 /*
- * Copyright (c) 2022, CATIE, All Rights Reserved
+ * Copyright (c) 2024, CATIE
  * SPDX-License-Identifier: Apache-2.0
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Maintainer : ACH
- * Creation : 01/2023
  */
 #ifndef CATIE_SIXTRON_ODOMETRY_H
 #define CATIE_SIXTRON_ODOMETRY_H
@@ -35,6 +20,8 @@ struct position {
 
 class Odometry {
 public:
+    virtual ~Odometry() = default;
+
     virtual void init() = 0;
 
     virtual void update() = 0; // Update Odometry. Implementation depending on the type of odometry.
@@ -42,19 +29,38 @@ public:
     virtual void setPos(position pos)
             = 0; // Bypass odometry by setting a new pos, useful when re-calibrate.
 
-    virtual float getX() = 0;
+    float getX() const {
+        return _odometry_position.x;
+    }
 
-    virtual float getY() = 0;
+    float getY() const {
+        return _odometry_position.y;
+    }
 
-    virtual float getTheta() = 0;
+    float getTheta() const {
+        return _odometry_position.theta;
+    }
 
-    virtual position getPos() = 0;
+    position getPos() const {
+        return _odometry_position;
+    }
 
-    virtual float getSpeedLin() = 0;
+    float getSpeedLin() const {
+        return _odometry_speeds.x;
+    }
 
-    virtual float getSpeedTan() = 0;
+    float getSpeedTan() const {
+        return _odometry_speeds.y;
+    }
 
-    virtual float getSpeedAng() = 0;
+    float getSpeedAng() const {
+        return _odometry_speeds.theta;
+    }
+
+protected:
+    float _odom_rate_hz = 0.0f;
+    position _odometry_position;
+    position _odometry_speeds; // todo: refactor, should be lin/tan/rot
 };
 } // namespace sixtron
 
