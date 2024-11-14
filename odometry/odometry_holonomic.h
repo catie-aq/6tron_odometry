@@ -5,7 +5,6 @@
 #ifndef CATIE_SIXTRON_ODOMETRY_HOLONOMIC_H
 #define CATIE_SIXTRON_ODOMETRY_HOLONOMIC_H
 
-#include "math_utils/math_utils.h"
 #include "odometry/odometry.h"
 
 namespace sixtron {
