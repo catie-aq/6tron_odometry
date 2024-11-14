@@ -5,6 +5,7 @@
 #ifndef CATIE_SIXTRON_ODOMETRY_H
 #define CATIE_SIXTRON_ODOMETRY_H
 
+#include "math_utils/math_utils.h"
 #include <math.h>
 #include <stdint.h>
 

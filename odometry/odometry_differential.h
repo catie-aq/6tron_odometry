@@ -38,7 +38,7 @@ protected:
     }
 
     inline float ticks2Rads(float ticks) const {
-        return ((ticks * float(M_PI)) / (_ticks_per_robot_revolution / 2.0f));
+        return ((ticks * M_PI_F) / (_ticks_per_robot_revolution / 2.0f));
     }
 
 private:

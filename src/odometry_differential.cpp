@@ -19,9 +19,9 @@ OdometryDifferential::OdometryDifferential(
     _motor_wheels_distance = enc_wheels_distance;
 
     // Basic calculs
-    _wheel_perimeter = (2.0f * float(M_PI) * _motor_wheel_radius);
+    _wheel_perimeter = (2.0f * M_PI_F * _motor_wheel_radius);
     _tick_per_meters = ((1.0f / (_wheel_perimeter)) * _motor_resolution);
-    _meters_per_robot_revolution = (float(M_PI) * _motor_wheels_distance);
+    _meters_per_robot_revolution = M_PI_F * _motor_wheels_distance);
     _ticks_per_robot_revolution = meters2Ticks(_meters_per_robot_revolution);
 }
 
@@ -54,8 +54,8 @@ void OdometryDifferential::compute(int64_t encL, int64_t encR) {
     _odometry_position.theta = ticks2Rads(_tick_theta);
 
     _robot_distance += delta_distance;
-    _odometry_speeds.x = ticks2Meters(delta_distance) * float(_odom_rate_hz);
-    _odometry_speeds.theta = ticks2Rads(_d_theta) * float(_odom_rate_hz);
+    _odometry_speeds.x = ticks2Meters(delta_distance) * _odom_rate_hz;
+    _odometry_speeds.theta = ticks2Rads(_d_theta) * _odom_rate_hz;
 }
 
 void OdometryDifferential::setPos(position pos) {
