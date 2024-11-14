@@ -30,7 +30,7 @@ protected:
     void compute(int64_t encL, int64_t encR);
 
     inline float ticks2Meters(float ticks) const {
-        return (ticks * (1.0f / _tick_per_meters));
+        return (ticks * _tick_per_meters_inverted);
     }
 
     inline float meters2Ticks(float meters) const {
@@ -38,14 +38,15 @@ protected:
     }
 
     inline float ticks2Rads(float ticks) const {
-        return ((ticks * M_PI_F) / (_ticks_per_robot_revolution / 2.0f));
+        return ((ticks * M_PI_F) * _ticks_per_robot_revolution_db2_inverted);
     }
 
 private:
     float _motor_resolution, _motor_wheel_radius;
     float _motor_wheels_distance; // If external encoders: distance between the two encoder wheels.
-    float _wheel_perimeter, _tick_per_meters;
-    float _meters_per_robot_revolution, _ticks_per_robot_revolution;
+    float _wheel_perimeter, _tick_per_meters, _tick_per_meters_inverted;
+    float _meters_per_robot_revolution, _ticks_per_robot_revolution,
+            _ticks_per_robot_revolution_db2_inverted;
 
     float _tick_theta, _d_theta;
     float _tick_x, _tick_y;

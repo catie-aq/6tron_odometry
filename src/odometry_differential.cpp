@@ -21,8 +21,10 @@ OdometryDifferential::OdometryDifferential(
     // Basic calculs
     _wheel_perimeter = (2.0f * M_PI_F * _motor_wheel_radius);
     _tick_per_meters = ((1.0f / (_wheel_perimeter)) * _motor_resolution);
-    _meters_per_robot_revolution = M_PI_F * _motor_wheels_distance);
+    _tick_per_meters_inverted = (1.0f / _tick_per_meters);
+    _meters_per_robot_revolution = (M_PI_F * _motor_wheels_distance);
     _ticks_per_robot_revolution = meters2Ticks(_meters_per_robot_revolution);
+    _ticks_per_robot_revolution_db2_inverted = (1.0f / (_ticks_per_robot_revolution / 2.0f));
 }
 
 OdometryDifferential::~OdometryDifferential() = default;
