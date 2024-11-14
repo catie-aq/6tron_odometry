@@ -32,16 +32,16 @@ OdometryDifferential::~OdometryDifferential() = default;
 void OdometryDifferential::compute(int64_t encL, int64_t encR) {
 
     // compute curvilinear distance
-    float new_distance = float(encL + encR) / 2.0f;
+    float new_distance = float(encL + encR) * 0.5f;
     float delta_distance = new_distance - _robot_distance;
 
     // compute new angle value
-    float new_angle = float(encR - encL) / 2.0f;
+    float new_angle = float(encR - encL) * 0.5f;
 
     _d_theta = new_angle - _tick_theta;
 
     // compute X/Y coordinates
-    float mid_angle = ticks2Rads(_tick_theta + (_d_theta / 2.0f));
+    float mid_angle = ticks2Rads(_tick_theta + (_d_theta * 0.5f));
     float d_x = delta_distance * cosf(mid_angle);
     float d_y = delta_distance * sinf(mid_angle);
     _tick_x += d_x;
