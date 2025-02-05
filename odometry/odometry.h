@@ -27,23 +27,38 @@ public:
 
     virtual void update() = 0; // Update Odometry. Implementation depending on the type of odometry.
 
-    virtual void setPos(position pos)
-            = 0; // Bypass odometry by setting a new pos, useful when re-calibrate.
+    void setPos(const float x, const float y, const float theta) {
+        position pos;
+        pos.x = x;
+        pos.y = y;
+        pos.theta = theta;
+        setPos(pos);
+    }
+
+    void setPos(const position &pos) {
+        _odometry_offset.x = _odometry_position.x - pos.x;
+        _odometry_offset.y = _odometry_position.y - pos.y;
+        _odometry_offset.theta = _odometry_position.theta - pos.theta;
+    }
 
     float getX() const {
-        return _odometry_position.x;
+        return _odometry_position.x - _odometry_offset.x;
     }
 
     float getY() const {
-        return _odometry_position.y;
+        return _odometry_position.y - _odometry_offset.y;
     }
 
     float getTheta() const {
-        return _odometry_position.theta;
+        return _odometry_position.theta - _odometry_offset.theta;
     }
 
     position getPos() const {
-        return _odometry_position;
+        position pos;
+        pos.x = getX();
+        pos.y = getY();
+        pos.theta = getTheta();
+        return pos;
     }
 
     float getSpeedLin() const {
@@ -60,7 +75,7 @@ public:
 
 protected:
     float _odom_rate_hz = 0.0f;
-    position _odometry_position;
+    position _odometry_position, _odometry_offset;
     position _odometry_speeds; // todo: refactor, should be lin/tan/rot
 };
 } // namespace sixtron
