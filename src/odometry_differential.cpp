@@ -60,11 +60,4 @@ void OdometryDifferential::compute(int64_t encL, int64_t encR) {
     _odometry_speeds.theta = ticks2Rads(_d_theta) * _odom_rate_hz;
 }
 
-void OdometryDifferential::setPos(position pos) {
-    // ! refactor: See issue #1
-    // _x = pos.x;
-    // _y = pos.y;
-    // _theta = pos.theta;
-}
-
 }

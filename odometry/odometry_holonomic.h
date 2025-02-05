@@ -15,8 +15,6 @@ public:
 
     ~OdometryHolonomic() override;
 
-    void setPos(position pos) override;
-
 protected:
     /**
      * @brief Compute the odometry from 3 (or more) encoders values.

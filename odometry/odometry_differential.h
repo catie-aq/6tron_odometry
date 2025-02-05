@@ -19,8 +19,6 @@ public:
 
     ~OdometryDifferential() override;
 
-    void setPos(position pos) override;
-
 protected:
     /**
      * @brief Compute the odometry from 2 encoders values (set up in differential).

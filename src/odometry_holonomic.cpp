@@ -77,13 +77,6 @@ void OdometryHolonomic::compute(Matrix *vectorEncoders) {
     _previous_odometry = XYThetaFromNEncoders;
 }
 
-void OdometryHolonomic::setPos(position pos) {
-    // ! refactor: See issue #1
-    // _x_global = pos.x;
-    // _y_global = pos.y;
-    // _theta_global = pos.theta;
-}
-
 void OdometryHolonomic::updateRotation(float newAngle) // updates the rotation matrix
 {
     _rotation.data[0][0] = cosf(newAngle + _offset_angle); // pour xg mult x
