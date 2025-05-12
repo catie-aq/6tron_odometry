@@ -63,7 +63,7 @@ void OdometryHolonomic::compute(Matrix *vectorEncoders) {
     }
 
     // rotation matrix updated
-    updateRotation(XYThetaFromNEncoders.data[2][0]);
+    updateRotation(XYThetaFromNEncoders.data[2][0] - _odometry_offset.theta);
 
     // position in the global referential
     _global_position = multiply(_rotation, _delta_vector);
