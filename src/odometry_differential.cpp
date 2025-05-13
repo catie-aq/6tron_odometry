@@ -42,8 +42,8 @@ void OdometryDifferential::compute(int64_t encL, int64_t encR) {
 
     // compute X/Y coordinates
     float mid_angle = ticks2Rads(_tick_theta + (_d_theta * 0.5f));
-    float d_x = delta_distance * cosf(mid_angle);
-    float d_y = delta_distance * sinf(mid_angle);
+    float d_x = delta_distance * cosf(mid_angle - _odometry_offset.theta);
+    float d_y = delta_distance * sinf(mid_angle - _odometry_offset.theta);
     _tick_x += d_x;
     _tick_y += d_y;
 
